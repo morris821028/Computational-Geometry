@@ -1,0 +1,1010 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!-- base href="http://blog.csdn.net/donkeylong/article/details/4909774" --><script src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/share.js"></script><link type="text/css" rel="stylesheet" href="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/bdsstyle.css"><script src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/tracking.js" charset="utf-8" type="text/javascript"></script><script src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/main.js" charset="utf-8" type="text/javascript"></script><script src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/jquery-1.js" charset="utf-8" type="text/javascript"></script><script src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/logger.js"></script><link href="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/style_002.css" rel="stylesheet" type="text/css"><link href="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/share_style0_16.css" rel="stylesheet"></head><body><iframe style="display: none;" frameborder="0"></iframe><div style="background:#fff;border:1px solid #999;margin:-1px -1px 0;padding:0;"><div style="background:#ddd;border:1px solid #999;color:#000;font:13px arial,sans-serif;font-weight:normal;margin:12px;padding:8px;text-align:left">這是 Google 對 <a href="http://blog.csdn.net/donkeylong/article/details/4909774" style="text-decoration:underline;color:#00c">http://blog.csdn.net/donkeylong/article/details/4909774</a> 的快取。 這是該網頁於 2014年10月18日 19:39:20 GMT 顯示時的快照。 在此期間，<a href="http://blog.csdn.net/donkeylong/article/details/4909774" style="text-decoration:underline;color:#00c">目前網頁</a>可能已經變更。 <a href="http://support.google.com/websearch/bin/answer.py?hl=zh-TW&amp;p=cached&amp;answer=1687222" style="text-decoration:underline;color:#00c">瞭解更多資訊</a><br>提示：如要在這個網頁上快速尋找您所搜尋的字詞，請按下 <b>Ctrl+F</b> 鍵或 <b>⌘-F</b> 鍵 (Mac)，然後使用尋找列進行搜尋。<br><br><div style="float:right"><a href="http://webcache.googleusercontent.com/search?q=cache:nMYu83BPv8kJ:blog.csdn.net/donkeylong/article/details/4909774&amp;client=firefox-a&amp;hl=zh-TW&amp;gl=tw&amp;strip=1" style="text-decoration:underline;color:#00c">純文字版</a></div>
+<div>&nbsp;</div></div></div><div style="position:relative">
+
+     
+    
+    
+
+
+    <script src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/ga.js" async="" type="text/javascript"></script><script id="allmobilize" charset="utf-8" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/allmobilize.js"></script>
+ <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="#">
+
+    <title>基于分治法和DCEL数据结构的Delaunay三角剖分 - donkeylong的专栏
+        - 博客频道 - CSDN.NET</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="description" content="平面点集的 Delaunay 三角剖分简介以下文字摘自互动百科： 　　Voronoi图，又叫泰森多边形或Dirichlet图，它是由一组由连接两邻点直线的垂直平分线组成的连续多边形组成。N个在平面上有区别的点，按照最邻近原则划分平面，每个点与它的最近邻区域相关联。Delaunay三角形是由与相邻Voronoi多边形共享一条边的相关点连接而成的三角形。Delaunay三角形的外接圆圆">
+    <script src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/jquery.js" type="text/javascript"></script>
+    <script type="text/javascript" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/ad.js"></script>
+        <!--new top-->
+       
+        <link rel="stylesheet" href="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/index.css">
+        <!--new top-->
+
+    <link rel="Stylesheet" type="text/css" href="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/style.css">
+    <link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="http://blog.csdn.net/donkeylong/rss/list">
+    <link rel="shortcut icon" href="http://csdnimg.cn/public/favicon.ico">
+    <link type="text/css" rel="stylesheet" href="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/default.css">
+ 
+
+
+
+
+    
+   
+      <!--new top-->
+    <script id="toolbar-tpl-scriptId" fixed="true" prod="blog" skin="black" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/html.js" type="text/javascript"></script>
+     <!--new top-->
+    <div id="container">
+        <div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h2>
+                <a href="http://blog.csdn.net/donkeylong">donkeylong的专栏</a></h2>
+            <h3></h3>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="clear">
+        </div>
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg">
+    </div>
+    <div class="navigator">
+        <ul>
+                <li id="btnContents"><a href="http://blog.csdn.net/donkeylong?viewmode=contents"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_mulu'])">
+                    <img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/ico_list.gif">目录视图</span></a></li>
+                <li id="btnView"><a href="http://blog.csdn.net/donkeylong?viewmode=list"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_zhaiyao'])">
+                    <img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/ico_summary.gif">摘要视图</span></a></li>
+                <li id="btnRss"><a href="http://blog.csdn.net/donkeylong/rss/list"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_RSS'])">
+                    <img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/ico_rss.gif">订阅</span></a></li>                
+
+            </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var username = "donkeylong";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/donkeylong";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "";  
+</script>
+
+        <div id="body">
+            <div id="main">
+                <div class="main">
+                        <div class="ad_class">
+<div class="notice tracking-ad" data-mod="popu_3"> 
+
+<a href="http://bbs.csdn.net/topics/390812950?page=2#post-398116601" target="_blank">
+<font color="blue">博客专家福利
+</font></a>
+&nbsp;&nbsp;&nbsp;
+
+<a target="_blank" href="http://www.csdn.net/article/2014-10-13/2822071">
+<font color="red">专访徐宜生：坚决不做代码搬运工</font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a target="_blank" href="http://blog.csdn.net/blogdevteam/article/details/40047403">
+<font color="blue">有奖试读&amp;征文:我们在互联网上奋斗的故事
+</font></a>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a target="_blank" href="http://weixin2014-sz.csdn.net/">
+<font color="red">微信开发者大会深圳站即将开幕
+</font></a>
+
+
+</div>                        </div>
+                        
+
+  
+<link href="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/comment1.css" type="text/css" rel="stylesheet">
+<link href="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/style1.css" type="text/css" rel="stylesheet">
+<script language="JavaScript" type="text/javascript" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/jquery_002.js"></script>
+<script type="text/javascript" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/main_002.js"></script>
+<div id="article_details" class="details">
+    <div class="article_title">   
+         <span class="ico ico_type_Original"></span>
+
+
+    <h1>
+        <span class="link_title"><a href="http://blog.csdn.net/donkeylong/article/details/4909774">
+        基于分治法和DCEL数据结构的Delaunay三角剖分
+        </a></span>
+    </h1>
+</div>
+
+    <div class="article_manage">
+        <span class="link_categories">
+        分类：
+            <a href="http://blog.csdn.net/donkeylong/article/category/620704" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_fenlei']);">计算几何</a> 
+        </span>
+    <span class="link_postdate">2009-12-01 00:59</span>
+    <span class="link_view" title="阅读次数">3375人阅读</span>
+    <span class="link_comments" title="评论次数"><a href="#comments" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_pinglun'])">评论</a>(18)</span>
+    <span class="link_collect"><a href="javascript:void(0);" onclick="javascript:_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shoucang']);collectArticle('基于分治法和DCEL数据结构的Delaunay三角剖分','4909774');return false;" title="收藏">收藏</a></span>
+    <span class="link_report"><a href="#report" onclick="javascript:_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_jubao']);report(4909774,2);return false;" title="举报">举报</a></span>
+    
+</div>
+<div class="tag2box"><a href="http://www.csdn.net/tag/%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84" target="_blank" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">数据结构</a><a href="http://www.csdn.net/tag/%e6%b5%8b%e8%af%95" target="_blank" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">测试</a><a href="http://www.csdn.net/tag/%e7%ae%97%e6%b3%95" target="_blank" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">算法</a><a href="http://www.csdn.net/tag/merge" target="_blank" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">merge</a><a href="http://www.csdn.net/tag/transactions" target="_blank" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">transactions</a><a href="http://www.csdn.net/tag/algorithm" target="_blank" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">algorithm</a></div>
+
+  
+    
+<div id="article_content" class="article_content">
+<p>
+</p><h1><a name="平面点集的_Delaunay_三角剖分简介">平面点集的 Delaunay 三角剖分简介</a></h1>
+<a name="平面点集的_Delaunay_三角剖分简介">
+<p>以下文字摘自互动百科： 　　</p>
+<blockquote><tt>Voronoi</tt>图，又叫泰森多边形或<tt>Dirichlet</tt>图，它是由一组由连接两邻点直线的垂直平分线组成的连续多边形组成。<tt>N</tt>个在平面上有区别的点，按照最邻近原则划分平面，每个点与它的最近邻区域相关联。<tt>Delaunay</tt>三角形是由与相邻<tt>Voronoi</tt>多边形共享一条边的相关点连接而成的三角形。<tt>Delaunay</tt>三角形的外接圆圆心是与三角形相关的<tt>Voronoi</tt>多边形的一个顶点。<tt>Delaunay</tt>三角形是<tt>Voronoi</tt>图的偶图。</blockquote>
+<blockquote>对于给定的初始点集<tt>P</tt>，有多种三角剖分方式，其中<tt>Delaunay</tt>三角剖分具有以下特征：</blockquote>
+<ol>
+<li><tt>Delaunay</tt>三角剖分是唯一的；</li>
+<li>三角网的外边界构成了点集<tt>P</tt>的凸包；</li>
+<li>没有任何点在三角形的外接圆内部，反之，如果一个三角网满足此条件，那么它就是<tt>Delaunay</tt>三角网。</li>
+<li>如果将三角网中的每个三角形的最小角进行升序排列，则<tt>Delaunay</tt>三角网的排列得到的数值最大，从这个意义上讲，<tt>Delaunay</tt>三角网是“最接近于规则化”的三角网。</li>
+</ol><strong>选题动机：</strong>&nbsp;由于<tt>Delaunay</tt>三角网是“最接近于规则化”的三角网，与普通的三角剖分相比更加具有实际运用价值，因此实现它比实现普通三角剖分更有意义。
+<p>&nbsp;</p>
+<p><strong>实现内容：</strong>&nbsp;本次作业主要实现了平面点集的<tt>Delaunay</tt>三角剖分。为了验证<tt>Delaunay</tt>三角剖分的正确性，系统提供了“圆测试”的功能，供用户对生成的三角形进行测试验证；为了验证<tt>DCEL</tt>数据结构的正确性，系统提供了“<tt>DCEL</tt>测试”的功能，用户输入任意一条测试线，系统将先后显示出测试线贯穿过的三角形；为了形象显示三角剖分的分治过程，系统提供了动态显示分治剖分过程。</p>
+<p><strong>报告组成：</strong>&nbsp;首先对算法依赖的数据结构<tt>DCEL</tt>进行说明，然后对基于<tt>DCEL</tt>的分治算法进行介绍，接着介绍<tt>DCEL</tt>测试和圆测试的相关细节，最后是对作品操作进行介绍，以及展示和分析实验结果。</p>
+<hr>
+</a>
+<h1><a name="数据结构与操作：Quad-Edge_vs_DCEL">数据结构与操作：Quad-Edge vs DCEL</a></h1>
+<a name="数据结构与操作：Quad-Edge_vs_DCEL">
+<p><tt>Guibas</tt>等<sup>[1]</sup>在文章中提出了一种<tt>Quad-Edge</tt>结构，使得<tt>Delaunay</tt>三角剖分的操作过程变得比较简单，并且由于这种结构保存了边的对偶信息，因此<tt>Delaunay</tt>三角与<tt>Voronoi diagrams</tt>之间的相互转换也非常容易。</p>
+<p>此次实验要求使用<tt>DCEL（Doubly-Connected Edge List）</tt>结构，该结构比<tt>Quad-Edge</tt>简单，并未保存边的对偶信息。下面的两幅图显示了两种数据结构在信息存储上的区别。</p>
+<blockquote><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/structure.png" alt=""></blockquote>
+<p><tt>Quad-Edge</tt>中的<tt>next</tt>为以<tt>origin</tt>为起点，逆时针找到的<tt>e[0]</tt>的下一条边。</p>
+<p>虽然<tt>DCEL</tt>没有存储<tt>Quad-Edge</tt>中的对偶边<tt>e[1]</tt>和<tt>e[3]</tt>，可能对从<tt>Delaunay</tt>三角转化为<tt>Voronoi</tt>图有所不便，但是对于实现<tt>Delaunay</tt>三角剖分来说<tt>DCEL</tt>已经足够用了，用<tt>Quad-Edge</tt>可以找得到的与<tt>e[0]</tt>相关联的边，使用<tt>DCEL</tt>结构也可以很轻易的找到，下面给出这些关联边的图示。</p>
+<blockquote><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/linkedges.png" alt=""></blockquote>
+</a>
+<h2><a name="几个重要的函数操作">几个重要的函数操作</a></h2>
+<a name="几个重要的函数操作">
+<p><tt>1.void splice(Edge* a, Edge* b)</tt></p>
+<blockquote>该函数的功能为：若a和b的起点是一个点，那么<tt>a</tt>和<tt>b</tt>将会被分成两条不相干的边；若<tt>a</tt>和<tt>b</tt>原本是两条不相干的边，那么这两条边的起点就会被连起来。下面是<tt>Guibas</tt>文章的中一张对<tt>splice</tt>进行解释的图：</blockquote>
+<blockquote><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/splice.png" alt=""></blockquote>
+<blockquote><tt>DCEL</tt>中<tt>splice</tt>的具体实现与<tt>Quad-Edge</tt>略有不同，只要掌握了<tt>splice</tt>具有上述功能的本质原因，就能很容易的实现了。具体实现请参考源码<tt>dtriangulation</tt>。</blockquote>
+<p><tt>2.Edge* connect(Edge* a, Edge* b)</tt></p>
+<blockquote>该函数的功能为：把<tt>a</tt>的终点与<tt>b</tt>的起点连起来。</blockquote>
+<p><tt>3.void swap(Edge* e)</tt></p>
+<blockquote>该函数的功能为：在<tt>inCircle*</tt>测试失败后（意味着与<tt>e</tt>相邻的两个三角不是<tt>Delaunay</tt>三角），从<tt>e</tt>的起点、终点沿四边形内部逆时针找到下两个点作为新的起点、终点，添加边<tt>e‘</tt>，并删除边<tt>e</tt>。如图所示：</blockquote>
+<blockquote><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/swap.png" alt=""></blockquote>
+<p><tt>*inCircle(a,b,c,d)</tt>函数测试点<tt>d</tt>是否在点<tt>a</tt>、<tt>b</tt>、<tt>c</tt>构成的三角形的外接圆内部。</p>
+<blockquote>判定一个点是否在一个圆内，我们马上想到得算法是求出该点到圆心的距离，然后与圆的半径大小做比较，但是假设圆心事先不知道，只
+提供了该圆上的三个顶点，然后同过这三个顶点来求得圆心的位置，我们马上想到的办法也可能是求出两条连线垂直平分线的交点就是圆心，但是这种算法在三点共
+线的情况下，两条连线的垂直平分线的交点在无穷远处，计算机是无法记录该圆心坐标，因此这种算法不鲁棒。 文献<sup>[1]</sup>中提到的<tt>InCircle</tt>方法是把平面上的点(x,y,0)投影到z=x<sup>2</sup>+y<sup>2</sup>的抛物面上，得到相应的投影坐标为(x, y, x<sup>2</sup>+y<sup>2</sup>)，如下图所示：<img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/r_InCircle.png" alt=""></blockquote>
+<p>&nbsp;</p>
+<blockquote>判定原则如下：</blockquote>
+<ul>
+<li>如果d的投影在a、b、c投影所组成平面的上方，则d在<tt>a</tt>、<tt>b</tt>、<tt>c</tt>构成的三角形的外接圆外部。</li>
+<li>如果d的投影在a、b、c投影所组成平面内，则d在<tt>a</tt>、<tt>b</tt>、<tt>c</tt>构成的三角形的外接圆的边界上。</li>
+<li>如果d的投影在a、b、c投影所组成平面的下方，则d在<tt>a</tt>、<tt>b</tt>、<tt>c</tt>构成的三角形的外接圆的内部。</li>
+</ul>
+<p><tt>4.Edge* locate(const Point2d&amp; p, Edge* startEdge)</tt></p>
+<blockquote>该函数的功能是给定一个点p，从startEdge出发，找到该点所落在的Delaunay三角剖分面片，返回该三角面片的按ccw方向的一条边。</blockquote>
+<blockquote>主要步骤如下(见下图)：</blockquote>
+<ol>
+<li>首先判断该点是否落在三角剖分凸包外，如果落在外面则返回一个空边，算法结束，否则转到步骤2。</li>
+<li>令e=startEdge，如果p落在e上，则返回e，算法结束，否则转到步骤3。</li>
+<li>如果p点不是在e.onext的右边，则e=e.onext，转到步骤2，否则转到步骤4。</li>
+<li>如果p点不是在e.dprev的右边，则e=e.dprev，转到步骤2，否则返回e，算法结束。</li>
+</ol>
+<p>&nbsp;</p>
+<blockquote><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/locating.png" alt=""></blockquote>
+<hr>
+</a>
+<h1><a name="分治法_Divide-and-Conquer">分治法 Divide-and-Conquer</a></h1>
+<a name="分治法_Divide-and-Conquer"></a>
+<h2><a name="主要步骤">主要步骤</a></h2>
+<a name="主要步骤"><ol>
+<li><strong>排序和去重</strong>:对平面上所有点按<tt>x</tt>坐标非递减排序进行排序，对于<tt>x</tt>坐标相同的点，再按<tt>y</tt>坐标非递减排序，然后去掉坐标重复的点。通过预排序，分治法可以在常数时间内完成划分；</li>
+<li><strong><tt>Divide</tt></strong>:把平面上的点集按数量在中间分成左右两个子集<em>&nbsp;<tt>L</tt>&nbsp;</em>、<em>&nbsp;<tt>R</tt>&nbsp;</em>；</li>
+<li><strong><tt>Conquer</tt></strong>:递归地完成左右两个点子集<em>&nbsp;<tt>L</tt>&nbsp;</em>、<em>&nbsp;<tt>R</tt>&nbsp;</em><tt>Delaunay三角剖分</tt>；</li>
+<li><strong><tt>Merge</tt></strong>:把<em>&nbsp;<tt>L</tt>&nbsp;</em>、<em>&nbsp;<tt>R</tt>&nbsp;</em>两个点集的Delaunay三角剖分，合并成(<em>&nbsp;<tt>L</tt>&nbsp;</em>U<em>&nbsp;<tt>R</tt>&nbsp;</em>)点集的Delaunay三角剖分。</li>
+</ol></a>
+<h2><a name="详细说明">详细说明</a></h2>
+<a name="详细说明"></a>
+<h4><a name="递归划分结束条件">递归划分结束条件</a></h4>
+<a name="递归划分结束条件">
+<blockquote>当平面上的点集划分到数目<em>&nbsp;<tt>N</tt>&nbsp;</em>小于4时(显然只会出现节点为2和3的情况，不会出现为1的情况)，直接两两点互连就是Delaunay三角剖分，递归划分结束(具体情况见下图)。</blockquote>
+<blockquote><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/two_three.png" alt=""></blockquote>
+</a>
+<h4><a name="递归返回数据结构">递归返回数据结构</a></h4>
+<a name="递归返回数据结构">
+<blockquote>由于<tt>DCEL</tt>结构的特性，可以使得剖分完成后的所有边都可以通过任意边抵达，本递归算法返回结果是两条边，分别是：以最左点为始点的逆时针方向的边和以最右点为始点顺时针方向的边(见下图)。
+<blockquote><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/l_r_di_do.png" alt=""></blockquote>
+保存这两条特殊的边的目的：</blockquote>
+<ul>
+<li>通过其中任意一条边访问到子<tt>Delaunay</tt>剖分上的任意一条边；</li>
+<li>能最速找到<em>&nbsp;<tt>L</tt>&nbsp;</em>和<em>&nbsp;<tt>R</tt>&nbsp;</em>两部分三角剖分凸包的下公共切线。</li>
+</ul>
+</a>
+<h4><a name="下公共切线寻找算法">下公共切线寻找算法</a></h4>
+<a name="下公共切线寻找算法">
+<blockquote>两个子凸包的下公切线查找使用的是<strong><tt>Zig-Zag</tt></strong>算法，具体的细节可参考<sup>[1]</sup>或是邓俊辉老师计算几何课件。</blockquote>
+</a>
+<h4><a name="Merge具体步骤">Merge具体步骤</a></h4>
+<a name="Merge具体步骤"><ol>
+<li>找到左右Delaunay三角剖分的下公切线，从右边指向左边，记为<tt>basel</tt>，且<tt>basel</tt>一定为合并后的<tt>Delaunay</tt>三角剖分中的一条边；</li>
+<li>以<tt>basel</tt>的左端点为始点，以某个候选左邻居点为终点的边记为<tt>lcand</tt>，类似的，以<tt>basel</tt>的右端点为始点，以某个候选右邻居点为终点的边记为<tt>rcand</tt>。</li>
+<li>先看<tt>lcand</tt>的终点<tt>lcand.dest</tt>是否在<tt>basel</tt>的右边，如果是，则测试经过<tt>basel.dest</tt>、<tt>basel.org</tt>、<tt>lcand.dest</tt>三个顶点的外接圆是否包含顶点<tt>lcand.onext.dest</tt>，如果包含,则说明<tt>lcand</tt>不是<tt>Delaunay</tt>三角剖分的一条边，删除<tt>lcand</tt>，且令<tt>lcand=lcand.onext</tt>，重复进行步骤3。针对于<tt>rcand</tt>要进行与<tt>lcand</tt>类似的操作。见下图。</li>
+<li>如果<tt>lcand</tt>的终点<tt>lcand.dest</tt>和<tt>rcand</tt>的终点<tt>rcand.dest</tt>都不是在<tt>basel</tt>的右边，那说明<tt>basel</tt>是上公切线，<tt>Merge</tt>算法终止。</li>
+<li>如果<tt>lcand.dest</tt>不在<tt>basel</tt>的右边或者rcand.dest在basel的右边而且<tt>rcand.dest</tt>包含在经过<tt>lcand.dest</tt>、<tt>lcand.org</tt>、<tt>rcand.org</tt>三个顶点的外接圆内，则连接顶点<tt>rcand.dest</tt>和<tt>basel.dest</tt>的边一定是合并后的<tt>Delaunay</tt>三角剖分中的一条边且令<tt>basel</tt>指向该边，否则，则说明连接顶点<tt>basel.org</tt>和<tt>lcand.dest</tt>的边为合并后的<tt>Delaunay</tt>三角剖分的一条边且令<tt>basel</tt>指向该边。转到步骤2。</li>
+</ol>
+<blockquote><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/lrcand.PNG" alt=""></blockquote>
+</a>
+<h4><a name="时间复杂度分析">时间复杂度分析</a></h4>
+<a name="时间复杂度分析">
+<ul>
+<li>设<em>&nbsp;L&nbsp;</em>三角剖分后返回的两条边为ldo，ldi，<em>&nbsp;R&nbsp;</em>三角剖分后返回两条边为rdi，ldo，通过ldi与rdi用zig-zag算法，Merge步骤1中的找下公切线能在O(n)内完成。</li>
+<li>Merge步骤3中执行的次数等于lcand边删除的次数，而Delaunay三角剖分边的数目与顶点的数目呈线性关系，因此最多是把所有的边删除，因此Merge步骤3执行的次数为O(n)。</li>
+<li>Merge步骤4、5执行的次数等于新添加的连接左右两边顶点的cross边的数目，cross边的数目与顶点的数目呈线性关系，因此Merge步骤4、5执行的次数为O(n)。</li>
+</ul>
+<blockquote>分治法的Divide的时间复杂度为O(1)，Merge的过程时间复杂度为O(n)，设总的时间复杂度为T(n)，则T(n)=2T(n/2)+O(n)，根据主定理可以推出该分治法的时间复杂度T(n)为O(nlogn)</blockquote>
+<hr>
+</a>
+<h1><a name="DCEL_测试">DCEL 测试</a></h1>
+<a name="DCEL_测试">
+<blockquote>DCEL测试是通过在Delaunay三角剖分中连接一条直线<em>&nbsp;l&nbsp;</em>，然后按顺序找到并记录该边穿过的三角面片。主要是为了验证DCEL数据结构的正确性和点定位<tt>locate</tt>算法的效率(见下图)。</blockquote>
+</a>
+<h4><a name="主要步骤如下">主要步骤如下</a></h4>
+<a name="主要步骤如下"><ol>
+<li>调用<tt>locate</tt>函数看直线<em>&nbsp;l&nbsp;</em>的始点<tt>p1</tt>与终点<tt>p2</tt>是否在Delaunay三角剖分所组成的凸包内。如果<tt>p1</tt>在凸包外，在顺时针沿着凸包的边界检查<em>&nbsp;l&nbsp;</em>是否和边界线相交，如果<em>&nbsp;l&nbsp;</em>不与任何边界线相交，则说明<em>&nbsp;l&nbsp;</em>不穿过<tt>Delaunay</tt>三角剖分中的任意三角面片，否则转到步骤2。如果p1在某个三角面片<tt>tri</tt>内，则逆时针围绕该<tt>tri</tt>的边找寻是否有与<em>&nbsp;l&nbsp;</em>相交的边，如果<em>&nbsp;l&nbsp;</em>不与任何边相交，则说明<em>&nbsp;l&nbsp;</em>完全位于<tt>tri</tt>的内部，算法结束，否则转到步骤2。</li>
+<li>记与<em>&nbsp;l&nbsp;</em>相交的边为e1，保存e1,接着找到el的twin:e2，然后从e2出发，逆时针在e2的左三角面中找与<em>&nbsp;l&nbsp;</em>相交的边，如果找到了相交的边，重复步骤2，否则就说明终点p2在该三角形中或p2在凸包外，算法终止。</li>
+</ol>
+<blockquote><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/dceltest.png" alt=""></blockquote>
+<hr>
+</a>
+<h1><a name="圆测试">圆测试</a></h1>
+<a name="圆测试">
+<p><tt>Delaunay</tt>三角剖分具有如下性质：任一三角形外接圆内部不会出现第四个点。</p>
+<p>为了直观地检测该程序对平面点集进行<tt>Delaunay</tt>三角剖分的正确性，我们为该程序添加了圆测试功能。在三角剖分之后，点击
+“操作”-&gt;“外接圆测试”，点中屏幕中任意一个三角形，程序将会绘制出该三角形的外接圆（左图），如果有第四个点“仿佛”落在该圆内，可以使用放
+大镜功能将该区域局部放大（中图），可以很明显地看出该点不在圆内（右图）。</p>
+<p><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/fig1.png" alt="">&nbsp;<img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/fig2.png" alt="">&nbsp;<img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/fig3.png" alt=""></p>
+<p><strong>遇到的问题</strong>：刚开始使用垂直平分线交点的方法求解三角形外接圆，后来发现忘记判断三角形的边是否水平或者竖直，导致在某些情况下无法计算得出外接圆。之后偶然发现一种更好的求解外接圆的方法<sup>[4]</sup>，该方法简化了表达式，不需要繁琐的判别，就可求出结果，因此我们也采用该方法求解外接圆。具体实现请参考源码<tt>dtriangulation</tt>。</p>
+<hr>
+</a>
+<h1><a name="作品界面和使用说明">作品界面和使用说明</a></h1>
+<a name="作品界面和使用说明"></a>
+<h2><a name="界面整体印象">界面整体印象</a></h2>
+<a name="界面整体印象">
+<p><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/total.png" alt=""></p>
+</a>
+<h2><a name="用户手册">用户手册</a></h2>
+<a name="用户手册">
+<ul>
+<li><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/new.png" alt="">（或者“文件”-&gt;“新建”）：将已有数据和界面图案进行清空，重新初始化。</li>
+<li><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/open.png" alt="">（或者“文件”-&gt;“打开”）：打开和读入保存在文件中的点集数据。此为输入点集方式之一。</li>
+<li><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/save.png" alt="">（或者“文件”-&gt;“保存”）：保存界面中显示的点集数据到文件中。</li>
+<li><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/enlarge.png" alt="">&nbsp;：放大显示状态。当界面显示的点集数据量较大情况下，为了观察某部分细节情况，先点击此图标，然后用鼠标左键按住选择界面中感兴趣的部分，松开鼠标左键后，界面即可显示出选择的部分细节。</li>
+<li><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/undo.png" alt="">&nbsp;：还原显示状态。当界面在显示局部细节的状态下（上一条操作后），系统约束不能进行其他操作。需要在点击此图标后，解除约束，才能进行其他操作。</li>
+<li>“操作”-&gt;“随机生成点”：输入点集数据方式之一。在弹出的对话框中输入点数，界面将显示出此数目的点集。</li>
+<li>“操作”-&gt;“鼠标输入点”：输入点集数据方式之一。进行此选择后，可以使用鼠标在界面上点击先后输入一些列点集。</li>
+<li>“操作”-&gt;“<tt>Delaunay</tt>三角剖分”：在界面上显示点集的情况下，进行此选择后，将进行三角剖分操作，并将结果显示在界面上。界面的右下栏中显示剖分时间。</li>
+<li>“操作”-&gt;“<tt>DCEL</tt>测试”：在完成三角剖分操作后，进行此选择，然后在界面上按下鼠标左键，然后拖动到另外一个地方，松开鼠标后，界面上将先后显示出此线段贯穿过的三角形。</li>
+<li>“操作”-&gt;“外接圆测试”：在完成三角剖分操作后，进行此选择，然后在界面上的任意三角形上进行点击，界面上将显示出此三角形的外接圆。</li>
+<li>“操作”-&gt;“三角剖分分治演示”：在输入点集的情况下，进行此选择，界面上将显示分治剖分的过程演示。</li>
+<li>快捷键“Enter”：即时随机生成一组当前设置点数的点集剖分结果图。界面的右下栏中显示剖分时间。此操作可以快捷地测试相同数目的不同组点集剖分结果。</li>
+</ul>
+<hr>
+</a>
+<h1><a name="实验结果展示">实验结果展示</a></h1>
+<a name="实验结果展示"></a>
+<h2><a name="不同数量级的点集显示">不同数量级的点集显示</a></h2>
+<a name="不同数量级的点集显示">
+<p>下面左图是1k个点的显示，右图是100k个点的显示。</p>
+<p><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/points.png" alt=""></p>
+</a>
+<h2><a name="不同数量级的点集剖分结果">不同数量级的点集剖分结果</a></h2>
+<a name="不同数量级的点集剖分结果">
+<p>下面两个剖分结果是分别对应上面两组输入的点集。</p>
+<p><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/results.png" alt=""></p>
+</a>
+<h2><a name="剖分结果的DCEL测试">剖分结果的DCEL测试</a></h2>
+<a name="剖分结果的DCEL测试">
+<p>下面四组图是对剖分三角形进行DCEL测试的结果图。动态演示过程请见下面的视频demo。</p>
+<p><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/dcel.png" alt=""></p>
+</a>
+<h2><a name="剖分结果的圆测试">剖分结果的圆测试</a></h2>
+<a name="剖分结果的圆测试">
+<p>系统提供了对剖分三角形进行圆测试，验证剖分得到的三角形是否正确。圆测试结果如下。</p>
+<p><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/circle.png" alt=""></p>
+</a>
+<h2><a name="显示细节">显示细节</a></h2>
+<a name="显示细节">
+<p>在输入的点集数目达到10k以上，比较难分辨出点和线的细节信息，此时可以通过选择放大显示来观察相关细节部分情况。如下图所示，左边是整体的显示，右边显示左边被框住区域的细节。</p>
+<p><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/enlarger.png" alt=""></p>
+</a>
+<h2><a name="分治过程演示结果">分治过程演示结果</a></h2>
+<a name="分治过程演示结果">
+<p>系统支持对分治过程的中间结果进行演示,由于程序在演示过程中无法进行截屏，演示过程见下面的视频demo。</p>
+</a>
+<h2><a name="视频demo">视频demo</a></h2>
+<a name="视频demo">
+<p>下面的视频对以上涉及的相关操作都有一个简单的演示过程。具体情况可以下载并观看此视频。</p>
+</a>
+<p><a rel="nofollow" href="http://cgprojects09.googlecode.com/files/demo.avi">http://cgprojects09.googlecode.com/files/demo.avi</a></p>
+<h2><a name="算法性能测试">算法性能测试</a></h2>
+<a name="算法性能测试">
+<ul>
+<li>时间复杂度分析 分治的三角剖分算法时间复杂度是 O(&nbsp;<em>n</em>&nbsp;log(&nbsp;<em>n</em>&nbsp;))。通过实验数据可以验证之。下面是相关实验数据（每一组数据是通过测试10次，取其平均值作为耗时）。</li>
+</ul>
+<p>&nbsp;</p>
+<table border="0">
+<tbody>
+<tr>
+<td><strong>点集数目</strong></td>
+<td>100</td>
+<td>500</td>
+<td>1,000</td>
+<td>5,000</td>
+<td>10,000</td>
+<td>50,000</td>
+<td>100,000</td>
+<td>500,000</td>
+<td>1,000,000</td>
+<td>2,000,000</td>
+<td>3,000,000</td>
+<td>4,000,000</td>
+<td>5,000,000</td>
+</tr>
+<tr>
+<td><strong>算法耗时(us)</strong></td>
+<td>184</td>
+<td>1,293</td>
+<td>2,922</td>
+<td>18,153</td>
+<td>39,334</td>
+<td>228,714</td>
+<td>485,895</td>
+<td>2,723,544</td>
+<td>5,777,429</td>
+<td>12,061,211</td>
+<td>18,188,295</td>
+<td>24,803,120</td>
+<td>32,020,173</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<p>用上述实验数据进行曲线拟合，可以得到下面一条曲线，满足O(&nbsp;<em>n</em>&nbsp;log(&nbsp;<em>n</em>&nbsp;))的性质。</p>
+<p><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/expridate.png" alt=""></p>
+<ul>
+<li>空间复杂度分析 大致分析算法的空间复杂度为O(&nbsp;<em>n</em>&nbsp;)，通过实验数据也可以验证这一观点。下面是相关实验数据（每一组数据是通过测试10次，取其平均值作为结果）。</li>
+</ul>
+<p>&nbsp;</p>
+<table border="0">
+<tbody>
+<tr>
+<td><strong>点集数目</strong></td>
+<td>100</td>
+<td>500</td>
+<td>1,000</td>
+<td>5,000</td>
+<td>10,000</td>
+<td>50,000</td>
+<td>100,000</td>
+<td>500,000</td>
+<td>1,000,000</td>
+<td>2,000,000</td>
+<td>3,000,000</td>
+<td>4,000,000</td>
+<td>5,000,000</td>
+</tr>
+<tr>
+<td><strong>内存消耗(M)</strong></td>
+<td>5</td>
+<td>6</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>20</td>
+<td>27</td>
+<td>90</td>
+<td>168</td>
+<td>334</td>
+<td>482</td>
+<td>638</td>
+<td>850</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<p>使用上述数据进行曲线拟合，大致可以看出，在点集数目为0.5M - 5M之间，曲线大致是线性变化的（点集数目较小时不能说明问题，因为算法使用的数据结构所占内存基本不占主要成分）。</p>
+<p><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/memorydata.png" alt=""></p>
+<p>以上测试实验的环境为：Intel Core 2 Duo CPU 2.2GHz, 2.00GB RAM。</p>
+<hr>
+</a>
+<h1><a name="参考文献">参考文献</a></h1>
+<a name="参考文献">
+<p><tt>[1]L. Guibas and J. Stolfi, Primitives for the manipulation of 
+general subdivisions and the computation of Voronoi diagrams, ACM 
+Transactions on Graphics, 4(2):75-123, 1985.</tt></p>
+<p><tt>[2]R. A. Dwyer, A faster divide-and conquer algorithm for constructing Delaunay triangulations algorithmica, 2:137-151, 1987.</tt></p>
+<p><tt>[3]D. Lischinski, Incremental Delaunay triangulation, Graphics gems IV, 47-59. 1994.</tt></p>
+<p><tt>[4]段小武，巧求外接圆圆心，电脑开发与应用，第15卷，第08期，2002年。</tt></p>
+<hr>
+</a>
+<h1><a name="其他说明">其他说明</a></h1>
+<a name="其他说明"></a>
+<h2><a name="未来工作">未来工作</a></h2>
+<a name="未来工作"><ol>
+<li>界面上对点线显示的缩放和移动操作。目前系统只实现了对局部进行放大显示，更加方便的交互式操作可以引入连续的缩放和移动操作。</li>
+</ol></a>
+<h2><a name="缩写说明">缩写说明</a></h2>
+<a name="缩写说明">
+<ul>
+<li>DCEL：双向链接边表（Doubly-Connected Edge List）。</li>
+</ul>
+<ul>
+<li>us: 微秒，10^(-6)秒。</li>
+</ul>
+</a>
+<h2><a name="测试数据">测试数据</a></h2>
+<a name="测试数据">
+<p>数据文件格式：</p>
+<p>5 # 第一行数字为点集个数</p>
+<p>0.1 0.2 # 第二行以下是点集的信息，x坐标和y坐标</p>
+<p>0.3 0.5</p>
+<p>0.4 0.9</p>
+<p>1.0 2.0</p>
+<p>6.0 2.0</p>
+</a>
+<ul>
+<a name="测试数据"></a>
+<li><a name="测试数据">10,000个点的普通测试点集：</a><a rel="nofollow" href="http://cgprojects09.googlecode.com/files/10000.point">http://cgprojects09.googlecode.com/files/10000.point</a></li>
+<li>1,000,000个点的普通测试点集：<a rel="nofollow" href="http://cgprojects09.googlecode.com/files/1000000.point">http://cgprojects09.googlecode.com/files/1000000.point</a></li>
+<li>含有重合点的测试点集：<a rel="nofollow" href="http://cgprojects09.googlecode.com/files/badpoint1.point">http://cgprojects09.googlecode.com/files/badpoint1.point</a></li>
+<li>在同一直线上的测试点集：<a rel="nofollow" href="http://cgprojects09.googlecode.com/files/badpoint2.point">http://cgprojects09.googlecode.com/files/badpoint2.point</a></li>
+</ul>
+<p></p>
+</div>
+
+
+
+
+<!-- Baidu Button BEGIN -->
+
+<div data-bd-bind="1417228164949" class="bdsharebuttonbox bdshare-button-style0-16" style="float: right;">
+<a href="#" class="bds_more" data-cmd="more" style="background-position:0 0 !important; background-image: url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=d754dcc0.png) !important"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间" style="background-position:0 -52px !important"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博" style="background-position:0 -104px !important"></a>
+<a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博" style="background-position:0 -260px !important"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网" style="background-position:0 -208px !important"></a>
+<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信" style="background-position:0 -1612px !important"></a>
+</div>
+<script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+<!-- Baidu Button END -->
+
+<!--192.168.100.35-->
+<ul class="article_next_prev">
+            <li class="prev_article"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian']);location.href='/donkeylong/article/details/4909720';">上一篇</span><a href="http://blog.csdn.net/donkeylong/article/details/4909720" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian'])">内存地址对齐</a></li>
+</ul>
+
+<!-- Baidu Button BEGIN -->
+<script src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/bds_s_v2.js" type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=1536434"></script>
+
+<script type="text/javascript">
+    document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+</script>
+<!-- Baidu Button END -->
+
+
+</div>
+      <dl class="blog-associat-tag">
+        <dt>主题推荐</dt>
+        <dd>
+                <a href="http://www.csdn.net/tag/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84" target="_blank" class="blog-tage-red">数据结构</a> 
+                <a href="http://www.csdn.net/tag/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95" target="_blank" class="blog-tage-red">性能测试</a> 
+                <a href="http://www.csdn.net/tag/transactions" target="_blank" class="blog-tage-red">transactions</a> 
+                <a href="http://www.csdn.net/tag/%E5%88%86%E6%B2%BB%E7%AE%97%E6%B3%95" target="_blank" class="blog-tage-red">分治算法</a> 
+                <a href="http://www.csdn.net/tag/%E4%BA%92%E5%8A%A8%E7%99%BE%E7%A7%91" target="_blank" class="blog-tage-red">互动百科</a> 
+        </dd>
+    </dl> 
+
+
+<dl class="blog-ass-articl tracking-ad" data-mod="popu_36" id="res-relatived"> 
+     <dt><span>猜你在找</span></dt>    
+</dl>
+
+<script type="text/javascript">
+    var searchtitletags = '基于分治法和DCEL数据结构的Delaunay三角剖分' + ',' + '数据结构,性能测试,transactions,分治算法,互动百科';
+    searchService({
+        index: 'blog',
+        query: searchtitletags,
+        from: 10,
+        size: 10,
+        appendTo: '#res-relatived',
+        url: 'recommend',
+        his: 2,
+        client: "blog_cf_enhance",
+        tmpl: '<dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="#{ url }" title="#{ title }" strategy="#{ strategy }">#{ title }</a></dd>'
+    });
+
+ </script>   
+
+
+    <div id="ad_cen">
+   
+          <script type="text/javascript">
+              new Ad(4, 'ad_cen');
+          </script>
+    </div>
+<div class="comment_class">
+    <div id="comment_title" class="panel_head">
+        <span class="see_comment">查看评论</span><a name="comments"></a></div>
+    <div id="comment_list">
+    </div>
+    <div id="comment_bar">
+    </div>
+    <div id="comment_form">
+    </div>
+
+    <div class="announce">
+        * 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+</div>
+
+<script type="text/javascript">
+    var fileName = '4909774';
+    var commentscount = 18;
+    var islock = false
+</script>
+<script type="text/javascript" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/comment.js"></script>
+    <div id="ad_bot">
+    </div>
+    <script type="text/javascript">
+    new Ad(5, 'ad_bot');
+    </script>
+<div id="report_dialog">
+</div>
+
+<div id="d-top" style="bottom:60px;">
+      
+
+       <a id="quick-reply" class="btn btn-top q-reply" title="快速回复" style="display:none;">
+            <img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/blog-icon-reply.png" alt="快速回复">
+        </a>    
+
+    <a id="d-top-a" class="btn btn-top backtop" style="display: none;" title="返回顶部" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_huidaodingbu'])">         
+         <img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/top.png" alt="TOP">
+    </a>
+</div>
+<script type="text/javascript">
+    $(function ()
+    {
+        $("#ad_frm_0").height("90px");
+        
+        setTimeout(function(){
+            $("#ad_frm_2").height("200px");
+        },1000);
+        
+
+        if($("#comment_content").length>0)
+        {
+            $("#quick-reply").show();
+
+            $("#quick-reply").click(function(){
+                setEditorFocus();
+            });
+        }       
+     
+        var d_top = $('#d-top-a');
+        document.onscroll = function ()
+        {
+            var scrTop = (document.body.scrollTop || document.documentElement.scrollTop);
+            if (scrTop > 500)
+            {
+                d_top.show();
+            } else
+            {
+                d_top.hide();
+            }
+        }
+        $('#d-top-a').click(function ()
+        {
+            scrollTo(0, 0);
+            this.blur();
+            return false;
+        });
+    });
+  
+</script>
+<style type="text/css">
+    .tag_list
+    {
+        background: none repeat scroll 0 0 #FFFFFF;
+        border: 1px solid #D7CBC1;
+        color: #000000;
+        font-size: 12px;
+        line-height: 20px;
+        list-style: none outside none;
+        margin: 10px 2% 0 1%;
+        padding: 1px;
+    }
+    .tag_list h5
+    {
+        background: none repeat scroll 0 0 #E0DBD3;
+        color: #47381C;
+        font-size: 12px;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 5px;
+        margin: 0;
+    }
+    .tag_list h5 a
+    {
+        color: #47381C;
+    }
+    .classify
+    {
+        margin: 10px 0;
+        padding: 4px 12px 8px;
+    }
+    .classify a
+    {
+        margin-right: 20px;
+        white-space: nowrap;
+    }
+</style>
+<div class="tag_list">
+    <h5>
+        <a href="http://www.csdn.net/tag/" target="_blank">核心技术类目</a></h5>
+    <div class="classify">
+<a title="全部主题" href="http://www.csdn.net/tag" target="_blank" onclick="LogClickCount(this,336);">全部主题</a>
+<a title="Hadoop" href="http://g.csdn.net/5272865" target="_blank" onclick="LogClickCount(this,336);">Hadoop</a>
+<a title="AWS" href="http://g.csdn.net/5272866" target="_blank" onclick="LogClickCount(this,336);">AWS</a>
+<a title="移动游戏" href="http://g.csdn.net/5272870" target="_blank" onclick="LogClickCount(this,336);">移动游戏</a>
+<a title="Java" href="http://g.csdn.net/5272871" target="_blank" onclick="LogClickCount(this,336);">Java</a>
+<a title="Android" href="http://g.csdn.net/5272872" target="_blank" onclick="LogClickCount(this,336);">Android</a>
+<a title="iOS" href="http://g.csdn.net/5272873" target="_blank" onclick="LogClickCount(this,336);">iOS</a>
+<a title="Swift" href="http://g.csdn.net/5272868" target="_blank" onclick="LogClickCount(this,336);">Swift</a>
+<a title="智能硬件" href="http://g.csdn.net/5272869" target="_blank" onclick="LogClickCount(this,336);">智能硬件</a>
+<a title="Docker" href="http://g.csdn.net/5272867" target="_blank" onclick="LogClickCount(this,336);">Docker</a>
+<a title="OpenStack" href="http://g.csdn.net/5272925" target="_blank" onclick="LogClickCount(this,336);">OpenStack</a>
+<a title="VPN" href="http://www.csdn.net/tag/vpn" target="_blank" onclick="LogClickCount(this,336);">VPN</a>
+<a title="Spark" href="http://g.csdn.net/5272924" target="_blank" onclick="LogClickCount(this,336);">Spark</a>
+<a title="ERP" href="http://www.csdn.net/tag/erp" target="_blank" onclick="LogClickCount(this,336);">ERP</a>
+<a title="IE10" href="http://www.csdn.net/tag/ie10" target="_blank" onclick="LogClickCount(this,336);">IE10</a>
+<a title="Eclipse" href="http://www.csdn.net/tag/eclipse" target="_blank" onclick="LogClickCount(this,336);">Eclipse</a>
+<a title="CRM" href="http://www.csdn.net/tag/crm" target="_blank" onclick="LogClickCount(this,336);">CRM</a>
+<a title="JavaScript" href="http://www.csdn.net/tag/javascript" target="_blank" onclick="LogClickCount(this,336);">JavaScript</a>
+<a title="数据库" href="http://www.csdn.net/tag/%E6%95%B0%E6%8D%AE%E5%BA%93" target="_blank" onclick="LogClickCount(this,336);">数据库</a>
+<a title="Ubuntu" href="http://www.csdn.net/tag/ubuntu" target="_blank" onclick="LogClickCount(this,336);">Ubuntu</a>
+<a title="NFC" href="http://www.csdn.net/tag/nfc" target="_blank" onclick="LogClickCount(this,336);">NFC</a>
+<a title="WAP" href="http://www.csdn.net/tag/wap" target="_blank" onclick="LogClickCount(this,336);">WAP</a>
+<a title="jQuery" href="http://www.csdn.net/tag/jquery" target="_blank" onclick="LogClickCount(this,336);">jQuery</a>
+<a title="BI" href="http://www.csdn.net/tag/bi" target="_blank" onclick="LogClickCount(this,336);">BI</a>
+<a title="HTML5" href="http://www.csdn.net/tag/html5" target="_blank" onclick="LogClickCount(this,336);">HTML5</a>
+<a title="Spring" href="http://www.csdn.net/tag/spring" target="_blank" onclick="LogClickCount(this,336);">Spring</a>
+<a title="Apache" href="http://www.csdn.net/tag/apache" target="_blank" onclick="LogClickCount(this,336);">Apache</a>
+<a title=".NET" href="http://www.csdn.net/tag/.net" target="_blank" onclick="LogClickCount(this,336);">.NET</a>
+<a title="API" href="http://www.csdn.net/tag/api" target="_blank" onclick="LogClickCount(this,336);">API</a>
+<a title="HTML" href="http://www.csdn.net/tag/html" target="_blank" onclick="LogClickCount(this,336);">HTML</a>
+<a title="SDK" href="http://www.csdn.net/tag/sdk" target="_blank" onclick="LogClickCount(this,336);">SDK</a>
+<a title="IIS" href="http://www.csdn.net/tag/iis" target="_blank" onclick="LogClickCount(this,336);">IIS</a>
+<a title="Fedora" href="http://www.csdn.net/tag/fedora" target="_blank" onclick="LogClickCount(this,336);">Fedora</a>
+<a title="XML" href="http://www.csdn.net/tag/xml" target="_blank" onclick="LogClickCount(this,336);">XML</a>
+<a title="LBS" href="http://www.csdn.net/tag/lbs" target="_blank" onclick="LogClickCount(this,336);">LBS</a>
+<a title="Unity" href="http://www.csdn.net/tag/unity" target="_blank" onclick="LogClickCount(this,336);">Unity</a>
+<a title="Splashtop" href="http://www.csdn.net/tag/splashtop" target="_blank" onclick="LogClickCount(this,336);">Splashtop</a>
+<a title="UML" href="http://www.csdn.net/tag/uml" target="_blank" onclick="LogClickCount(this,336);">UML</a>
+<a title="components" href="http://www.csdn.net/tag/components" target="_blank" onclick="LogClickCount(this,336);">components</a>
+<a title="Windows Mobile" href="http://www.csdn.net/tag/windowsmobile" target="_blank" onclick="LogClickCount(this,336);">Windows Mobile</a>
+<a title="Rails" href="http://www.csdn.net/tag/rails" target="_blank" onclick="LogClickCount(this,336);">Rails</a>
+<a title="QEMU" href="http://www.csdn.net/tag/qemu" target="_blank" onclick="LogClickCount(this,336);">QEMU</a>
+<a title="KDE" href="http://www.csdn.net/tag/kde" target="_blank" onclick="LogClickCount(this,336);">KDE</a>
+<a title="Cassandra" href="http://www.csdn.net/tag/cassandra" target="_blank" onclick="LogClickCount(this,336);">Cassandra</a>
+<a title="CloudStack" href="http://www.csdn.net/tag/cloudstack" target="_blank" onclick="LogClickCount(this,336);">CloudStack</a>
+<a title="FTC" href="http://www.csdn.net/tag/ftc" target="_blank" onclick="LogClickCount(this,336);">FTC</a>
+<a title="coremail" href="http://www.csdn.net/tag/coremail" target="_blank" onclick="LogClickCount(this,336);">coremail</a>
+<a title="OPhone " href="http://www.csdn.net/tag/ophone" target="_blank" onclick="LogClickCount(this,336);">OPhone </a>
+<a title="CouchBase" href="http://www.csdn.net/tag/couchbase" target="_blank" onclick="LogClickCount(this,336);">CouchBase</a>
+<a title="云计算" href="http://www.csdn.net/tag/%E4%BA%91%E8%AE%A1%E7%AE%97" target="_blank" onclick="LogClickCount(this,336);">云计算</a>
+<a title="iOS6" href="http://www.csdn.net/tag/iOS6" target="_blank" onclick="LogClickCount(this,336);">iOS6</a>
+<a title="Rackspace " href="http://www.csdn.net/tag/rackspace" target="_blank" onclick="LogClickCount(this,336);">Rackspace </a>
+<a title="Web App" href="http://www.csdn.net/tag/webapp" target="_blank" onclick="LogClickCount(this,336);">Web App</a>
+<a title="SpringSide" href="http://www.csdn.net/tag/springside" target="_blank" onclick="LogClickCount(this,336);">SpringSide</a>
+<a title="Maemo" href="http://www.csdn.net/tag/maemo" target="_blank" onclick="LogClickCount(this,336);">Maemo</a>
+<a title="Compuware" href="http://www.csdn.net/tag/compuware" target="_blank" onclick="LogClickCount(this,336);">Compuware</a>
+<a title="大数据" href="http://www.csdn.net/tag/%E5%A4%A7%E6%95%B0%E6%8D%AE" target="_blank" onclick="LogClickCount(this,336);">大数据</a>
+<a title="aptech" href="http://www.csdn.net/tag/aptech" target="_blank" onclick="LogClickCount(this,336);">aptech</a>
+<a title="Perl" href="http://www.csdn.net/tag/perl" target="_blank" onclick="LogClickCount(this,336);">Perl</a>
+<a title="Tornado" href="http://www.csdn.net/tag/tornado" target="_blank" onclick="LogClickCount(this,336);">Tornado</a>
+<a title="Ruby" href="http://www.csdn.net/tag/ruby" target="_blank" onclick="LogClickCount(this,336);">Ruby</a>
+<a title="Hibernate" href="http://www.csdn.net/hibernate" target="_blank" onclick="LogClickCount(this,336);">Hibernate</a>
+<a title="ThinkPHP" href="http://www.csdn.net/tag/thinkphp" target="_blank" onclick="LogClickCount(this,336);">ThinkPHP</a>
+<a title="HBase" href="http://www.csdn.net/tag/hbase" target="_blank" onclick="LogClickCount(this,336);">HBase</a>
+<a title="Pure" href="http://www.csdn.net/tag/pure" target="_blank" onclick="LogClickCount(this,336);">Pure</a>
+<a title="Solr" href="http://www.csdn.net/tag/solr" target="_blank" onclick="LogClickCount(this,336);">Solr</a>
+<a title="Angular" href="http://www.csdn.net/tag/angular" target="_blank" onclick="LogClickCount(this,336);">Angular</a>
+<a title="Cloud Foundry" href="http://www.csdn.net/tag/cloudfoundry" target="_blank" onclick="LogClickCount(this,336);">Cloud Foundry</a>
+<a title="Redis" href="http://www.csdn.net/tag/redis" target="_blank" onclick="LogClickCount(this,336);">Redis</a>
+<a title="Scala" href="http://www.csdn.net/tag/scala" target="_blank" onclick="LogClickCount(this,336);">Scala</a>
+<a title="Django" href="http://www.csdn.net/tag/django" target="_blank" onclick="LogClickCount(this,336);">Django</a>
+<a title="Bootstrap" href="http://www.csdn.net/tag/bootstrap" target="_blank" onclick="LogClickCount(this,336);">Bootstrap</a>
+    </div>
+</div>
+
+
+                        <div class="clear">
+                        </div>
+                    </div>                   
+                
+            </div>
+            <div id="side">
+    <div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/donkeylong" target="_blank">
+    <img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/1_donkeylong.jpg" title="访问我的空间" style="max-width:90%">
+    </a>
+    <br>
+    <span><a href="http://my.csdn.net/donkeylong" class="user_name" target="_blank">donkeylong</a></span>
+</div>
+<div class="interact">
+<a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_guanzhu'])"></a>
+
+ <a href="javascript:void(0);" class="letter" title="[发私信]" onclick="window.open('http://msg.csdn.net/letters/model?receiver=donkeylong','_blank','height=350,width=700');_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_sixin'])"></a>  
+</div>
+<div id="blog_medal">
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>6120次</span></li>
+    <li>积分：<span>90分</span></li>
+    <li>排名：<span>千里之外</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>2篇</span></li>
+    <li>转载：<span>0篇</span></li>
+    <li>译文：<span>0篇</span></li>
+    <li>评论：<span>21条</span></li>
+</ul>
+</ul>
+</div>
+
+
+<div class="panel" id="panel_Search">
+    <ul class="panel_head"><span>文章搜索</span></ul>
+    <ul class="panel_body">
+        <form id="frmSearch" action="http://so.csdn.net/search" class="form_search" target="_blank">
+        <span><input id="inputSearch" class="blogsearch" title="请输入关键字" type="text"></span>
+        <input id="btnSubmit" value="搜索" title="search in blog" type="button">
+        <input name="q" id="inputQ" type="hidden">
+        <input name="t" value="blog" type="hidden">
+        <a id="btnSearchBlog" target="_blank"></a>
+        </form>
+    </ul>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#btnSubmit").click(function () {           
+            search();
+        });
+
+        $("#frmSearch").submit(function () {
+            search();
+            return false;
+        });
+
+        function search()
+        {
+            var url = "http://so.csdn.net/so/search/s.do?q=" + encodeURIComponent($("#inputSearch").val()) + "&u=" + username + "&t=blog";
+            window.location.href = url;
+        }   
+    });
+</script><div id="panel_Category" class="panel">
+<ul class="panel_head"><span>文章分类</span></ul>
+<ul class="panel_body">
+             <li>
+                <a href="http://blog.csdn.net/donkeylong/article/category/620715" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">C/C++</a><span>(0)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/donkeylong/article/category/620735" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">CUDA编程</a><span>(0)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/donkeylong/article/category/620712" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">D3D</a><span>(0)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/donkeylong/article/category/620707" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">代码优化</a><span>(1)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/donkeylong/article/category/620703" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">数据结构</a><span>(0)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/donkeylong/article/category/620705" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">渲染</a><span>(0)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/donkeylong/article/category/620714" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">游戏引擎</a><span>(0)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/donkeylong/article/category/620702" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">算法分析设计</a><span>(0)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/donkeylong/article/category/620706" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">组合数学</a><span>(0)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/donkeylong/article/category/620708" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">网络</a><span>(0)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/donkeylong/article/category/620704" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">计算几何</a><span>(1)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/donkeylong/article/category/620710" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">计算机图形学</a><span>(0)</span>
+            </li>
+</ul>
+</div><div id="panel_Archive" class="panel">
+<ul class="panel_head"><span>文章存档</span></ul>
+<ul class="panel_body">
+<div id="archive_list">
+<!--归档统计-->
+<li><a href="http://blog.csdn.net/donkeylong/article/month/2009/12">2009年12月</a><span>(2)</span></li>
+</div>
+</ul>
+</div>
+<div id="hotarticls" class="panel">
+<ul class="panel_head">
+    <span>       
+阅读排行    </span>
+</ul>
+
+<ul class="panel_body itemlist">
+<li>
+<a href="http://blog.csdn.net/donkeylong/article/details/4909774" title="基于分治法和DCEL数据结构的Delaunay三角剖分">基于分治法和DCEL数据结构的Delaunay三角剖分</a><span>(3374)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/donkeylong/article/details/4909720" title="内存地址对齐">内存地址对齐</a><span>(2313)</span>
+</li>
+</ul>
+</div>
+<div id="hotarticls2" class="panel">
+<ul class="panel_head"><span>评论排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="http://blog.csdn.net/donkeylong/article/details/4909774" title="基于分治法和DCEL数据结构的Delaunay三角剖分">基于分治法和DCEL数据结构的Delaunay三角剖分</a><span>(18)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/donkeylong/article/details/4909720" title="内存地址对齐">内存地址对齐</a><span>(3)</span>
+</li>
+</ul>
+</div>
+<div id="homepageArticles" class="panel tracking-ad" data-mod="popu_4">
+<ul class="panel_head"><span>推荐文章</span></ul>
+<ul class="panel_body" id="ad_commend"></ul>
+</div>
+<script type="text/javascript">
+ new Ad(12, 'ad_commend');
+</script><div id="newcomments" class="panel">
+<ul class="panel_head"><span>最新评论</span></ul>
+<ul class="panel_body itemlist">
+    <li>
+   
+         <a href="http://blog.csdn.net/donkeylong/article/details/4909774#comments">基于分治法和DCEL数据结构的Delaunay三角剖分</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/jie357059570" class="user_name">jie357059570</a>:
+最近在做Delaunay剖分，希望用分治法去实现，如果楼主不介意的话，能否发我一份源代码，我的邮箱：...
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/donkeylong/article/details/4909774#comments">基于分治法和DCEL数据结构的Delaunay三角剖分</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/u011029582" class="user_name">u011029582</a>:
+可以代码借鉴下么？luciferxy9764@163.com
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/donkeylong/article/details/4909774#comments">基于分治法和DCEL数据结构的Delaunay三角剖分</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/yinniy00001" class="user_name">yinniy00001</a>:
+您好，我也在做的东西设计三角剖分的部分，想用一下你的程序与软件开展下面的工作，谢谢啦~ yzalex...
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/donkeylong/article/details/4909774#comments">基于分治法和DCEL数据结构的Delaunay三角剖分</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/qbyangster1" class="user_name">qbyangster1</a>:
+我用的是Incremental，速度确实不够快！PC的配置比您的还要好些，但在50~60点时，耗时约...
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/donkeylong/article/details/4909720#comments">内存地址对齐</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/Dg_winter" class="user_name">Dg_winter</a>:
+内存还真多东西学......~!
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/donkeylong/article/details/4909720#comments">基于分治法和DCEL数据结构的Delaunay三角剖分</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/cs958415706" class="user_name">cs958415706</a>:
+求源码,谢谢邮箱shao12315@yeah.net
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/donkeylong/article/details/4909720#comments">基于分治法和DCEL数据结构的Delaunay三角剖分</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/softwarestudying" class="user_name">softwarestudying</a>:
+“L. Guibas and J. Stolfi, Primitives for the manip...
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/donkeylong/article/details/4909720#comments">基于分治法和DCEL数据结构的Delaunay三角剖分</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/mxw976235955" class="user_name">mxw976235955</a>:
+楼主可不可以共享下源码啊，毕设急需，orz，谢谢啦，邮箱是tomserious123@gmail.c...
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/donkeylong/article/details/4909720#comments">基于分治法和DCEL数据结构的Delaunay三角剖分</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/zhouna396287156" class="user_name">zhouna396287156</a>:
+非常有用的资料，多谢
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/donkeylong/article/details/4909720#comments">基于分治法和DCEL数据结构的Delaunay三角剖分</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/mengxiang_dt" class="user_name">mengxiang_dt</a>:
+你好，我也是在做分治法建Delaunay Triangulation 这方面的毕设，每一小部分建De...
+    </p>
+    </li>
+</ul>
+</div>
+    </div>
+    <div class="clear">
+    </div>
+</div>
+
+            <div class="clear">
+            </div>
+        </div>
+        
+
+<script type="text/javascript" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/cnick.js"></script>
+<script type="text/javascript" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/newblog.js"></script>
+
+
+<script type="text/javascript" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/showblogmedal.js"></script>
+<script type="text/javascript">
+    document.write('<script type="text/javascript" src="http://csdnimg.cn/pubfooter/js/publib_footer.js?' + Math.floor(new Date() / 120000).toString(36) + '="></' + 'script>');
+</script><script type="text/javascript" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/publib_footer.js"></script><link rel="stylesheet" type="text/css" href="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/pub_footer_2014.css"><div class="pub_fo"><div id="pub_footerall" class="pub_footer_new"><dl><dt></dt> <dd class="foot_sub_menu"><a href="http://www.csdn.net/company/about.html" target="_blank">公司简介</a><span>|</span><a href="http://www.csdn.net/company/recruit.html" target="_blank">招贤纳士</a><span>|</span><a href="http://www.csdn.net/company/marketing.html" target="_blank">广告服务</a><span>|</span><a href="http://www.csdn.net/company/account.html" target="_blank">银行汇款帐号</a><span>|</span><a href="http://www.csdn.net/company/contact.html" target="_blank">联系方式</a><span>|</span><a href="http://www.csdn.net/company/statement.html" target="_blank">版权声明</a><span>|</span><a href="http://www.csdn.net/company/layer.html" target="_blank">法律顾问</a><span>|</span><a href="mailto:webmaster@csdn.net">问题报告</a><span>|</span><a target="_blank" href="http://www.csdn.net/friendlink.html">合作伙伴</a><span>|</span><a href="http://bbs.csdn.net/forums/Service" target="_blank">论坛反馈</a></dd><dd class="foot_contact"><a href="http://wpa.qq.com/msgrd?v=3&amp;uin=2355263776&amp;site=qq&amp;menu=yes" target="_blank" class="qq">网站客服</a><a href="http://wpa.qq.com/msgrd?v=3&amp;uin=2251809102&amp;site=qq&amp;menu=yes" target="_blank" class="qq">杂志客服</a><a href="http://e.weibo.com/csdnsupport/profile" target="_blank" class="weibo">微博客服</a><a href="mailto:webmaster@csdn.net" class="email" title="联系邮箱">webmaster@csdn.net</a><span class="phone" title="服务热线">400-600-2320</span><span class="interval">|</span><span>北京创新乐知信息技术有限公司 版权所有</span><span class="interval">|</span><span>江苏乐知网络技术有限公司 提供商务支持</span></dd><dd class="foot_copyright"><span>京&nbsp;ICP&nbsp;证&nbsp;070598&nbsp;号</span><span class="interval">|</span><span>Copyright © 1999-2014, CSDN.NET, All Rights Reserved&nbsp;</span><a href="http://www.hd315.gov.cn/beian/view.asp?bianhao=010202001032100010" target="_blank"><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/gongshang_logos.gif" alt="GongshangLogo" title=""></a></dd></dl></div></div><script id="noticeScript" type="text/javascript" btnid="header_notice_num" wrapid="note1" count="5" subcount="5" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/notify.js"></script>
+    <script type="text/javascript" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/login.js"></script>
+<script type="text/javascript">document.write("<img src=http://counter.csdn.net/pv.aspx?id=24 border=0 width=0 height=0>");</script><img src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/pv.xml" height="0" width="0" border="0">
+<script type="text/javascript" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/counter.js"></script><script type="text/javascript" charset="UTF-8" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/msg.js"></script>
+<script type="text/javascript" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/ad-blog.js"></script>
+<script type="text/javascript" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/count.js"></script><iframe src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/logs.htm" frameborder="0" height="0" width="0"></iframe>
+<script type="text/javascript">
+    $(function () {
+        function __get_code_toolbar(snippet_id) {
+            return $("<a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "' target='_blank' title='在CODE上查看代码片' style='text-indent:0;'><img src='https://code.csdn.net/assets/CODE_ico.png' width=12 height=12 alt='在CODE上查看代码片' style='position:relative;top:1px;left:2px;'/></a>"
+                    + "<a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "/fork' target='_blank' title='派生到我的代码片'  style='text-indent:0;'><img src='https://code.csdn.net/assets/ico_fork.svg' width=12 height=12 alt='派生到我的代码片' style='position:relative;top:2px;left:2px;'/></a>");
+        }
+        
+        $("[code_snippet_id]").each(function () {
+            __s_id = $(this).attr("code_snippet_id");
+            if (__s_id != null && __s_id != "" && __s_id != 0 && parseInt(__s_id) > 70020) {
+                __code_tool = __get_code_toolbar(__s_id);
+                $(this).prev().find(".tools").append(__code_tool);
+            }
+        });
+    });
+</script>
+
+    </div>
+      <!--new top-->
+    
+    <script id="csdn-toolbar-id" btnid="header_notice_num" wrapid="note1" count="5" subcount="5" type="text/javascript" src="%E5%9F%BA%E4%BA%8E%E5%88%86%E6%B2%BB%E6%B3%95%E5%92%8CDCEL%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84Delaunay%E4%B8%89%E8%A7%92%E5%89%96%E5%88%86%20-%20donkeylong%E7%9A%84%E4%B8%93%E6%A0%8F%20-%20%E5%8D%9A%E5%AE%A2%E9%A2%91%E9%81%93%20-%20CSDN.NET_files/toolbar.js"></script>
+     <!--new top-->
+
+
+</div></body></html>
